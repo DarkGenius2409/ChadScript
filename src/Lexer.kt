@@ -1,3 +1,4 @@
+import kotlin.reflect.typeOf
 import kotlin.system.exitProcess
 
 class Lexer {
@@ -31,7 +32,7 @@ class Lexer {
                 tokens.add(this.createToken(src.removeFirst(), TokenType.OpenParen))
             } else if (src.first() == ")") {
                 tokens.add(this.createToken(src.removeFirst(), TokenType.CloseParen))
-            } else if (src.first() == "+" || src.first() == "-" || src.first() == "*" || src.first() == "/") {
+            } else if (src.first() == "+" || src.first() == "-" || src.first() == "*" || src.first() == "/" || src.first() == "%") {
                 tokens.add(this.createToken(src.removeFirst(), TokenType.BinaryOperator))
             } else if (src.first() == "=") {
                 tokens.add(this.createToken(src.removeFirst(), TokenType.Equals))
@@ -51,10 +52,10 @@ class Lexer {
                     }
                     // check for reserved keywords
                     val reserved = KEYWORDS[ident];
-                    if(reserved == null){
-                        tokens.add(this.createToken(ident, TokenType.Identifier))
-                    } else {
+                    if(reserved is TokenType){
                         tokens.add(this.createToken(ident, reserved))
+                    } else {
+                        tokens.add(this.createToken(ident, TokenType.Identifier))
                     }
                 }
                 else if (this.isSkippable(src.first())) {
@@ -65,6 +66,7 @@ class Lexer {
                 }
             }
         }
+        tokens.add(this.createToken("EndOfFile", TokenType.EOF))
         return tokens
     }
 }

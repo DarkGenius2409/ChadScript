@@ -1,3 +1,3 @@
 package ast_types
 
-data class ProgramType(override val kind: NodeType, override val body: MutableList<Statement>) : Program
+data class Program(override val kind: NodeType, override val body: MutableList<Statement>) : ProgramType

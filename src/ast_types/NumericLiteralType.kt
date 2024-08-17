@@ -1,6 +1,6 @@
 package ast_types
 
-interface NumericLiteral : Expr {
+interface NumericLiteralType : Expr {
     override val kind: NodeType
         get() = NodeType.NumericLiteral
     val value: Double

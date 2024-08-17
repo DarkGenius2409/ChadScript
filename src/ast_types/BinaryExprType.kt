@@ -1,6 +1,6 @@
 package ast_types
 
-interface BinaryExpr : Expr {
+interface BinaryExprType : Expr {
     override val kind: NodeType
         get() = NodeType.BinaryExpr
     val left: Expr

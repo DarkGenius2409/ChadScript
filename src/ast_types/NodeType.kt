@@ -4,5 +4,6 @@ enum class NodeType {
     Program,
     NumericLiteral,
     Identifier,
-    BinaryExpr
+    BinaryExpr,
+    NullLiteral,
 }

@@ -1,7 +1,5 @@
 import kotlin.system.exitProcess
 
-data class Token(val value: String, val type: TokenType)
-
 class Lexer {
     private fun isAlpha (str: String) : Boolean {
         return str.uppercase() != str.lowercase()

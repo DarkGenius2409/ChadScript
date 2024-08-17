@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/ChadScript.iml" filepath="$PROJECT_DIR$/ChadScript.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SkibidiScript.iml" filepath="$PROJECT_DIR$/SkibidiScript.iml" />
     </modules>
   </component>
 </project>

@@ -27,7 +27,7 @@ class Parser {
         return prev
     }
 
-    public fun produceAST (sourceCode: String): ProgramType {
+    fun produceAST (sourceCode: String): ProgramType {
         this.tokens = lexer.tokenize(sourceCode)
         val statements: MutableList<Statement> = mutableListOf()
         val programType: ProgramType = Program(NodeType.Program, statements)
@@ -88,6 +88,10 @@ class Parser {
                 val value = this.parseExpr()
                 this.expect(TokenType.CloseParen, "Unexpected token found inside parenthesised expression. Expected closing parenthesis.")
                 return value
+            }
+            TokenType.Null -> {
+                this.eat()
+                return NullLiteral(NodeType.NullLiteral, "null")
             }
             else -> {
                 println("Unexpected token found during parsing ${this.currentToken()}")

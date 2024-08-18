@@ -1,5 +1,9 @@
-import ast_types.*
-import kotlin.system.exitProcess
+package ast
+
+import ast.types.*
+import lexer.Lexer
+import lexer.Token
+import lexer.TokenType
 
 class Parser {
     private var tokens: MutableList<Token> = mutableListOf()
@@ -21,8 +25,7 @@ class Parser {
     private fun expect(type: TokenType, err: String): Token {
         val prev = this.tokens.removeFirst()
         if(prev.type != type) {
-            println("Parser Error:\n $err $prev - Expecting: $type")
-            exitProcess(69)
+            throw Error("ast.Parser Error:\n $err $prev - Expecting: $type")
         }
         return prev
     }
@@ -30,7 +33,7 @@ class Parser {
     fun produceAST (sourceCode: String): ProgramType {
         this.tokens = lexer.tokenize(sourceCode)
         val statements: MutableList<Statement> = mutableListOf()
-        val programType: ProgramType = Program(NodeType.Program, statements)
+        val programType: ProgramType = Program(statements)
 
         // Parse until EOF
         while(this.notEOF()) {
@@ -56,7 +59,6 @@ class Parser {
             val operator = this.eat().value
             val right = this.parseMultiplicativeExpr()
             left = BinaryExpr(
-                kind = NodeType.BinaryExpr,
                 left, right, operator
             )
         }
@@ -70,7 +72,6 @@ class Parser {
             val operator = this.eat().value
             val right = this.parsePrimaryExpr()
             left = BinaryExpr(
-                kind = NodeType.BinaryExpr,
                 left, right, operator
             )
         }
@@ -81,21 +82,16 @@ class Parser {
         val tk = this.currentToken().type
 
         when (tk) {
-            TokenType.Identifier -> return Identifier(kind = NodeType.Identifier, symbol = this.eat().value)
-            TokenType.Number -> return NumericLiteral(NodeType.NumericLiteral, value =this.eat().value.toDouble())
+            TokenType.Identifier -> return Identifier(this.eat().value)
+            TokenType.Number -> return NumericLiteral(this.eat().value.toDouble())
             TokenType.OpenParen -> {
                 this.eat();
                 val value = this.parseExpr()
                 this.expect(TokenType.CloseParen, "Unexpected token found inside parenthesised expression. Expected closing parenthesis.")
                 return value
             }
-            TokenType.Null -> {
-                this.eat()
-                return NullLiteral(NodeType.NullLiteral, "null")
-            }
             else -> {
-                println("Unexpected token found during parsing ${this.currentToken()}")
-                exitProcess(69)
+                throw Error("Unexpected token found during parsing ${this.currentToken()}")
             }
         }
     }

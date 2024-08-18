@@ -1,4 +1,4 @@
-package ast_types
+package ast.types
 
 interface Statement {
     val kind: NodeType

@@ -1,38 +1,20 @@
 package runtime
 
-import ast_types.*
+import ast.types.*
 import runtime.types.*
-import kotlin.system.exitProcess
 
 class Interpreter {
-    fun evaluate(astNode: Statement): RuntimeValType {
-        return when (astNode.kind){
-            NodeType.NumericLiteral ->
-                NumberVal(ValueType.Number, (astNode as NumericLiteral).value)
+    private fun evalProgram(program: Program, env: Environment): RuntimeVal {
+        var lastEvaluated: RuntimeVal = NullVal()
 
-            NodeType.Identifier -> TODO()
-            NodeType.BinaryExpr -> this.evalBinaryExpr(astNode as BinaryExpr)
-            NodeType.Program -> this.evalProgram(astNode as Program)
-            NodeType.NullLiteral ->
-                NullVal(ValueType.Null, (astNode as NullLiteral).value)
-            else -> {
-                println("This AST Node has not yet been setup for interpretation. $astNode")
-                exitProcess(69)
-            }
+        for (statement in program.body) {
+            lastEvaluated = this.evaluate(statement, env)
         }
+
+        return lastEvaluated
     }
 
-    fun evalBinaryExpr(binop: BinaryExpr): RuntimeValType {
-        val lhs = this.evaluate(binop.left)
-        val rhs = this.evaluate(binop.right)
-
-        if(lhs.type == ValueType.Number && rhs.type == ValueType.Number) {
-            return this.evalNumericBinaryExpr((lhs as NumberVal), (rhs as NumberVal), binop.operator)
-        }
-        return NullVal(ValueType.Null, "null")
-    }
-
-    fun evalNumericBinaryExpr(lhs: NumberVal, rhs: NumberVal, operator: String): NumberVal {
+    private fun evalNumericBinaryExpr(lhs: NumberVal, rhs: NumberVal, operator: String): NumberVal {
         var result: Double = 0.0
         if(operator == "+")
             result = lhs.value + rhs.value
@@ -45,16 +27,35 @@ class Interpreter {
         else
             result = lhs.value % rhs.value
 
-        return NumberVal(ValueType.Number, result)
+        return NumberVal(result)
     }
 
-    fun evalProgram(program: Program): RuntimeValType {
-        var lastEvaluated: RuntimeValType = NullVal(ValueType.Null, "null")
+    private fun evalBinaryExpr(binop: BinaryExpr, env: Environment): RuntimeVal {
+        val lhs = this.evaluate(binop.left, env)
+        val rhs = this.evaluate(binop.right, env)
 
-        for (statement in program.body) {
-            lastEvaluated = this.evaluate(statement)
+        if(lhs.type == ValueType.Number && rhs.type == ValueType.Number) {
+            return this.evalNumericBinaryExpr((lhs as NumberVal), (rhs as NumberVal), binop.operator)
         }
+        return NullVal()
+    }
 
-        return lastEvaluated
+    private fun evalIdentifier(ident: Identifier, env: Environment): RuntimeVal {
+        val value = env.lookupVar(ident.symbol)
+        return value
+    }
+
+    fun evaluate(astNode: Statement, env: Environment): RuntimeVal {
+        return when (astNode.kind){
+            NodeType.NumericLiteral ->
+                NumberVal((astNode as NumericLiteral).value)
+
+            NodeType.Identifier -> return evalIdentifier((astNode as Identifier), env)
+            NodeType.BinaryExpr -> this.evalBinaryExpr((astNode as BinaryExpr), env)
+            NodeType.Program -> this.evalProgram((astNode as Program), env)
+            else -> {
+                throw Error("This AST Node has not yet been setup for interpretation. $astNode")
+            }
+        }
     }
 }

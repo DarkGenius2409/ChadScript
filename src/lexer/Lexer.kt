@@ -1,5 +1,6 @@
-import kotlin.reflect.typeOf
-import kotlin.system.exitProcess
+package lexer
+
+import KEYWORDS
 
 class Lexer {
     private fun isAlpha (str: String) : Boolean {
@@ -61,8 +62,7 @@ class Lexer {
                 else if (this.isSkippable(src.first())) {
                     src.removeFirst() // Skip current character
                 } else {
-                    println("Unrecognized character found in source: ${src.first()}")
-                    exitProcess(69)
+                    throw Error("Unrecognized character found in source: ${src.first()}")
                 }
             }
         }

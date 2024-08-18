@@ -1,3 +1,3 @@
-package ast_types
+package ast.types
 
 interface Expr : Statement {}

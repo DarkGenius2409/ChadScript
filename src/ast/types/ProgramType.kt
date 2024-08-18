@@ -1,4 +1,4 @@
-package ast_types
+package ast.types
 
 interface ProgramType : Statement {
     override val kind: NodeType

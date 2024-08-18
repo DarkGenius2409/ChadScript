@@ -1,11 +1,18 @@
+import ast.Parser
+import lexer.TokenType
+import runtime.Environment
 import runtime.Interpreter
+import runtime.types.BooleanVal
+import runtime.types.NullVal
+import runtime.types.NumberVal
+import runtime.types.ValueType
 import kotlin.system.exitProcess
 import java.io.File
 import java.io.InputStream
 
 val KEYWORDS = mapOf(
     "ong" to TokenType.Let,
-    "ohio" to TokenType.Null
+    "faxx" to TokenType.Const
 )
 
 fun interpretFile() {
@@ -14,15 +21,23 @@ fun interpretFile() {
 
     val parser = Parser()
     val interpreter = Interpreter()
+    val env = Environment(null)
+    env.declareVar("ohio", NullVal())
+    env.declareVar("sigma", BooleanVal(true))
+    env.declareVar("skibidi", BooleanVal(false))
 
     val program = parser.produceAST(source)
-    val result = interpreter.evaluate(program)
+    val result = interpreter.evaluate(program, env)
     println(result)
 }
 
 fun repl() {
     val parser = Parser()
     val interpreter = Interpreter()
+    val env = Environment(null)
+    env.declareVar("ohio", NullVal())
+    env.declareVar("sigma", BooleanVal(true))
+    env.declareVar("skibidi", BooleanVal(false))
     println("\nSkibidi Repl v0.1\n")
     while(true) {
         print(">>> ")
@@ -32,7 +47,7 @@ fun repl() {
         }
 
         val program = parser.produceAST(input)
-        val result = interpreter.evaluate(program)
+        val result = interpreter.evaluate(program, env)
         println(result)
     }
 }

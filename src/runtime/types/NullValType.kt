@@ -1,7 +1,7 @@
 package runtime.types
 
-interface NullValType : RuntimeValType {
+interface NullValType : RuntimeVal {
     override val type: ValueType
         get() = ValueType.Null
-    val value: String
+    val value: String?
 }

@@ -1,3 +1,3 @@
 package runtime.types
 
-data class NullVal(override val type: ValueType, override val value: String) : NullValType
+data class NullVal(override val value: String? = null) : NullValType

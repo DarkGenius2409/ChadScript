@@ -1,5 +1,5 @@
 package runtime.types
 
-interface RuntimeValType {
+interface RuntimeVal {
     val type: ValueType
 }

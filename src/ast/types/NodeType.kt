@@ -9,4 +9,5 @@ enum class NodeType {
     NumericLiteral,
     Identifier,
     BinaryExpr,
+    AssignmentExpr
 }

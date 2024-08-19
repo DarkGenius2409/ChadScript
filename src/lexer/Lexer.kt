@@ -35,8 +35,6 @@ class Lexer {
                 tokens.add(this.createToken(src.removeFirst(), TokenType.CloseParen))
             } else if (src.first() == "+" || src.first() == "-" || src.first() == "*" || src.first() == "/" || src.first() == "%") {
                 tokens.add(this.createToken(src.removeFirst(), TokenType.BinaryOperator))
-            } else if (src.first() == "=") {
-                tokens.add(this.createToken(src.removeFirst(), TokenType.Equals))
             } else {
                 // Handle multi-character tokens
                 if (this.isInt(src.first())) {

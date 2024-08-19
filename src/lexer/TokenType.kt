@@ -10,6 +10,7 @@ enum class TokenType {
     Equals,
     OpenParen, CloseParen,
     BinaryOperator,
+    Semicolon,
     EOF, // End of File
 
     // Keywords

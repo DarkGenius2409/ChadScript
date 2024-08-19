@@ -12,7 +12,9 @@ import java.io.InputStream
 
 val KEYWORDS = mapOf(
     "ong" to TokenType.Let,
-    "faxx" to TokenType.Const
+    "faxx" to TokenType.Const,
+    "be" to TokenType.Equals,
+    "fr" to TokenType.Semicolon
 )
 
 fun interpretFile() {
@@ -22,9 +24,9 @@ fun interpretFile() {
     val parser = Parser()
     val interpreter = Interpreter()
     val env = Environment(null)
-    env.declareVar("ohio", NullVal())
-    env.declareVar("sigma", BooleanVal(true))
-    env.declareVar("skibidi", BooleanVal(false))
+    env.declareVar("ohio", NullVal(), true)
+    env.declareVar("sigma", BooleanVal(true), true)
+    env.declareVar("skibidi", BooleanVal(false), true)
 
     val program = parser.produceAST(source)
     val result = interpreter.evaluate(program, env)
@@ -35,9 +37,9 @@ fun repl() {
     val parser = Parser()
     val interpreter = Interpreter()
     val env = Environment(null)
-    env.declareVar("ohio", NullVal())
-    env.declareVar("sigma", BooleanVal(true))
-    env.declareVar("skibidi", BooleanVal(false))
+    env.declareVar("ohio", NullVal(), true)
+    env.declareVar("sigma", BooleanVal(true), true)
+    env.declareVar("skibidi", BooleanVal(false), true)
     println("\nSkibidi Repl v0.1\n")
     while(true) {
         print(">>> ")

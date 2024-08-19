@@ -45,7 +45,29 @@ class Parser {
 
     private fun parseStmt(): Statement {
         // skip to parse_expr
-        return this.parseExpr()
+        return when (this.currentToken().type) {
+            TokenType.Let -> this.parseVarDeclaration()
+            TokenType.Const -> this.parseVarDeclaration()
+            else -> this.parseExpr()
+        }
+    }
+
+    private fun parseVarDeclaration(): Statement {
+        val isConstant = this.eat().type == TokenType.Const
+        val identifier = this.expect(TokenType.Identifier, "Expected identifier name following ong | faxx keywords.").value
+
+        if(this.currentToken().type == TokenType.Semicolon) {
+            this.eat()
+            if(isConstant)
+                throw Error("Must assign value to constant expression. No value provided")
+
+            return VarDeclaration(false, identifier, null)
+        }
+
+        this.expect(TokenType.Equals, "Expected equals token following identifier in var declaration.")
+        val declaration = VarDeclaration(isConstant, identifier, this.parseExpr())
+        this.expect(TokenType.Semicolon, "Variable declaration statement must end with semicolon.")
+        return declaration
     }
 
     private fun parseExpr(): Expr {
